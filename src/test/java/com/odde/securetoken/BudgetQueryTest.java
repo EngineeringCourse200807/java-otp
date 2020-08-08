@@ -97,6 +97,15 @@ public class BudgetQueryTest {
         assertEquals(120 + 240, actual);
     }
 
+    @Test
+    public void daily_amount() {
+        givenBudgets(budget(2020, MAY, 31));
+
+        int actual = budgetService.query(of(2020, MAY, 20), of(2020, MAY, 24));
+
+        assertEquals(5, actual);
+    }
+
     private Budget budget(final int year, final Month month, final int amount) {
         return new Budget() {{
             setMonth(of(year, month, 1));

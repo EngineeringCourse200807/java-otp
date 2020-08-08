@@ -10,11 +10,9 @@ public class BudgetService {
     }
 
     public int query(LocalDate startDate, LocalDate endDate) {
-        int total = 0;
-        for (Budget budget : budgetRepo.findAll()) {
-            total += 10 * new Period(startDate, endDate).getOverlappingDayCount(budget.getPeriod());
-        }
-        return total;
+        return budgetRepo.findAll().stream().
+                mapToInt(budget -> budget.getOverlappingAmount(new Period(startDate, endDate))).
+                sum();
     }
 
 }
