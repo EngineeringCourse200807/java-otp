@@ -70,6 +70,33 @@ public class BudgetQueryTest {
         assertEquals(310, actual);
     }
 
+    @Test
+    public void end_is_before_budget_start() {
+        givenBudgets(budget(2020, MAY, 310));
+
+        int actual = budgetService.query(of(2020, APRIL, 20), of(2020, APRIL, 24));
+
+        assertEquals(0, actual);
+    }
+
+    @Test
+    public void start_is_after_budget_end() {
+        givenBudgets(budget(2020, MAY, 310));
+
+        int actual = budgetService.query(of(2020, JUNE, 20), of(2020, JUNE, 24));
+
+        assertEquals(0, actual);
+    }
+
+    @Test
+    public void two_months() {
+        givenBudgets(budget(2020, MAY, 310), budget(2020, JUNE, 300));
+
+        int actual = budgetService.query(of(2020, MAY, 20), of(2020, JUNE, 24));
+
+        assertEquals(120 + 240, actual);
+    }
+
     private Budget budget(final int year, final Month month, final int amount) {
         return new Budget() {{
             setMonth(of(year, month, 1));
