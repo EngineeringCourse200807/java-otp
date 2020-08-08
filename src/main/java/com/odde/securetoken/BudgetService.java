@@ -1,6 +1,7 @@
 package com.odde.securetoken;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
@@ -12,9 +13,18 @@ public class BudgetService {
     }
 
     public int query(LocalDate startDate, LocalDate endDate) {
-        if (budgetRepo.findAll().isEmpty()) {
+        List<Budget> all = budgetRepo.findAll();
+        if (all.isEmpty()) {
             return 0;
         }
-        return 10 * ((int) DAYS.between(startDate, endDate) + 1);
+        Budget budget = all.get(0);
+        return 10 * getOverlappingDayCount(startDate, endDate, budget);
     }
+
+    private int getOverlappingDayCount(LocalDate startDate, LocalDate endDate, Budget budget) {
+        LocalDate overlappingEnd = endDate.isBefore(budget.getEndOfBudget()) ? endDate : budget.getEndOfBudget();
+        LocalDate overlappingStart = startDate.isAfter(budget.getMonth()) ? startDate : budget.getMonth();
+        return (int) DAYS.between(overlappingStart, overlappingEnd) + 1;
+    }
+
 }

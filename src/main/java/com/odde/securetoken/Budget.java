@@ -22,4 +22,8 @@ public class Budget {
     public void setAmount(int amount) {
         this.amount = amount;
     }
+
+    public LocalDate getEndOfBudget() {
+        return month.withDayOfMonth(month.lengthOfMonth());
+    }
 }

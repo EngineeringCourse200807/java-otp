@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.time.Month;
 
 import static java.time.LocalDate.of;
-import static java.time.Month.MAY;
+import static java.time.Month.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -41,6 +41,33 @@ public class BudgetQueryTest {
         int actual = budgetService.query(of(2020, MAY, 3), of(2020, MAY, 4));
 
         assertEquals(20, actual);
+    }
+
+    @Test
+    public void end_date_is_not_in_budget_month() {
+        givenBudgets(budget(2020, MAY, 310));
+
+        int actual = budgetService.query(of(2020, MAY, 20), of(2020, JUNE, 4));
+
+        assertEquals(120, actual);
+    }
+
+    @Test
+    public void start_date_is_not_in_budget_month() {
+        givenBudgets(budget(2020, MAY, 310));
+
+        int actual = budgetService.query(of(2020, APRIL, 20), of(2020, MAY, 4));
+
+        assertEquals(40, actual);
+    }
+
+    @Test
+    public void start_end_are_both_not_in_budget_month() {
+        givenBudgets(budget(2020, MAY, 310));
+
+        int actual = budgetService.query(of(2020, APRIL, 20), of(2020, JUNE, 4));
+
+        assertEquals(310, actual);
     }
 
     private Budget budget(final int year, final Month month, final int amount) {
